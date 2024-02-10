@@ -8,6 +8,12 @@ const App = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
         </Routes>
+        <Routes>
+          <Route
+            path="/room/:roomId"
+            element={<h1>Hey there, you are in room</h1>}
+          />
+        </Routes>
       </SocketProvider>
     </div>
   );
