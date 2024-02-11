@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSocekt } from "../providers/Socket";
 import "./Home.css";
 import { useNavigate } from "react-router-dom";
@@ -9,9 +9,12 @@ const HomePage = () => {
   const [email, setEmail] = useState();
   const [roomId, setRoomId] = useState();
 
-  const handleRoomJoined = ({ roomId }) => {
-    navigate(`/room/${roomId}`);
-  };
+  const handleRoomJoined = useCallback(
+    ({ roomId }) => {
+      navigate(`/room/${roomId}`);
+    },
+    [navigate]
+  );
 
   const handleJoinRoom = () => {
     socket.emit("join-room", { emailId: email, roomId });
@@ -19,7 +22,11 @@ const HomePage = () => {
 
   useEffect(() => {
     socket.on("joined-room", handleRoomJoined);
-  }, [socket]);
+
+    return () => {
+      socket.off("joined-room", handleRoomJoined);
+    };
+  }, [handleRoomJoined, socket]);
 
   return (
     <div className="homepage-container">
